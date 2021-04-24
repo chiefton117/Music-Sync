@@ -11,6 +11,7 @@
 ## Arguments given will be the function(backup, sync), source and destination directories
 ##
 import sys
+import cli_ui
 from filecmp import dircmp
 import os.path
 from shutil import copytree
@@ -22,23 +23,37 @@ def main():
 	source = tk.Tk()
 	source.withdraw()
 
-	asciibox("Music Synchronizer V1.0", "#")
+	cli_ui.setup(title="Music_Sync_V1.0")
 
-	# Select two guaranteed existing source directories
-	print("Please select a source directory | back up from here");
-	source = filedialog.askdirectory(title="--Select Source Directory--", mustexist = True)
-	if(len(source) < 1): 
-		print("Cancelling...");
-		sys.exit();
+	cli_ui.info(asciibox("Music Sync V1.0", "#"))
 
-	print("Please select a destination directory | back up to here");
-	destination = filedialog.askdirectory(title="--Select Destination Directory--", mustexist = True)
-	if(len(destination) < 1): 
-		print("Cancelling...");
-		sys.exit();
+	cli_ui.info_section("Music_Sync_V1.0")
 
-	print("Back up from " + source + " ----> " + destination);
-	sys.exit() if input("Y/N: ").lower() != "y" else backup(source, destination);
+	print(asciibox("abcdefgkjhf\nkjlashdfjk", "9"))
+
+	options = ["Backup", "Synchronize"];
+	fctn = cli_ui.ask_choice(["Select a function"], choices = options);
+	print(fctn)
+
+	# asciibox("Music Synchronizer V1.0", "#")
+	# asciibox("aaaaaaaaaa", "a")
+	# asciibox("ferrets r cool", "/")
+
+	# # Select two guaranteed existing source directories
+	# print("Please select a source directory | back up from here");
+	# source = filedialog.askdirectory(title="--Select Source Directory--", mustexist = True)
+	# if(len(source) < 1): 
+	# 	print("Cancelling...");
+	# 	sys.exit();
+
+	# print("Please select a destination directory | back up to here");
+	# destination = filedialog.askdirectory(title="--Select Destination Directory--", mustexist = True)
+	# if(len(destination) < 1): 
+	# 	print("Cancelling...");
+	# 	sys.exit();
+
+	# print("Back up from " + source + " ----> " + destination);
+	# sys.exit() if input("Y/N: ").lower() != "y" else backup(source, destination);
 	
 	
 
@@ -108,13 +123,38 @@ def backup(s, d):
 #def synchronize(s, d):
 
 def asciibox(text, symbol):
-	length = len(text) + 6; # Length of word + 3 spaces per side
+
+	padding = 3; # Space from end of longest word to border
+	longest = text; # Find the longest line to base size from
 	
+
+	if "\n" in text: # If there are many lines, split to print all
+		words = text.split("\n"); # Define an array either way to iterate through
+		longest = max(words, key=len);
+	else:
+		words = [text];
+	
+
+	length = len(text_good) + 6; # Length of word + 3 spaces per side
 	space = " ";
-	print((symbol * 5) + (space * (len(text)-2)) + (symbol * 5))
-	print(symbol + (space * length) + symbol)
-	print(symbol + (space*3) + text + (space*3) + symbol)
-	print(symbol + (space * length) + symbol)
-	print((symbol * 5) + (space * (len(text)-2)) + (symbol * 5))
+
+	sign = ((symbol * 5) + (space * (len(text)-2)) + (symbol * 5) + "\n");
+	sign += (symbol + (space * length) + symbol) + "\n";
+
+	for line in words:
+		sign += (symbol + (space*padding) + line + (space*padding) + symbol) + "\n";
+	
+
+	sign += (symbol + (space * length) + symbol) + "\n";
+	sign += ((symbol * 5) + (space * (len(text)-2)) + (symbol * 5)) + "\n";
+
+	return sign;
+
+	# Optional print from fctn code
+	# print((symbol * 5) + (space * (len(text)-2)) + (symbol * 5))
+	# print(symbol + (space * length) + symbol)
+	# print(symbol + (space*3) + text + (space*3) + symbol)
+	# print(symbol + (space * length) + symbol)
+	# print((symbol * 5) + (space * (len(text)-2)) + (symbol * 5))
 
 main();

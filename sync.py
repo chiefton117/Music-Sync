@@ -12,6 +12,7 @@
 ##
 import sys
 import cli_ui
+import math
 from filecmp import dircmp
 import os.path
 from shutil import copytree
@@ -126,7 +127,7 @@ def asciibox(text, symbol):
 
 	padding = 3; # Space from end of longest word to border
 	longest = text; # Find the longest line to base size from
-	
+	words = [];
 
 	if "\n" in text: # If there are many lines, split to print all
 		words = text.split("\n"); # Define an array either way to iterate through
@@ -135,18 +136,21 @@ def asciibox(text, symbol):
 		words = [text];
 	
 
-	length = len(text_good) + 6; # Length of word + 3 spaces per side
+	length = len(longest) + (2 * padding); # An empty line will have this many spaces
 	space = " ";
 
-	sign = ((symbol * 5) + (space * (len(text)-2)) + (symbol * 5) + "\n");
+	sign = ((symbol * 5) + (space * (len(longest)-2)) + (symbol * 5) + "\n");
 	sign += (symbol + (space * length) + symbol) + "\n";
 
 	for line in words:
-		sign += (symbol + (space*padding) + line + (space*padding) + symbol) + "\n";
+		line_pad = math.floor(int((length-len(line))/2));
+		#if line_pad % 2 != 0: line_pad = line_pad + 1; # Adjust for odd numbered lines
+		sign += (symbol + (space*line_pad) + line + (space*line_pad) + symbol) + "\n";
+		#sign += (symbol + (space*padding) + line + (space*padding) + symbol) + "\n";
 	
 
 	sign += (symbol + (space * length) + symbol) + "\n";
-	sign += ((symbol * 5) + (space * (len(text)-2)) + (symbol * 5)) + "\n";
+	sign += ((symbol * 5) + (space * (len(longest)-2)) + (symbol * 5)) + "\n";
 
 	return sign;
 

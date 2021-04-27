@@ -30,11 +30,15 @@ def main():
 
 	cli_ui.info_section("Music_Sync_V1.0")
 
-	print(asciibox("abcdefgkjhf\nkjlashdfjk", "9"))
+
 
 	options = ["Backup", "Synchronize"];
 	fctn = cli_ui.ask_choice(["Select a function"], choices = options);
 	print(fctn)
+
+
+	###### TODO Check drive sizes!
+
 
 	# asciibox("Music Synchronizer V1.0", "#")
 	# asciibox("aaaaaaaaaa", "a")
@@ -63,6 +67,10 @@ def main():
 	#comp = dircmp(dir1,dir2); # Create the comparison object
 	#for a in comp.left_only:
 	#	print(os.path.join(comp.left,a))
+
+
+
+
 
 # Backup from one directory to another, given two guaranteed existing directories in these steps:
 # 1. Copy all artists only existing in source to directory
@@ -135,6 +143,7 @@ def asciibox(text, symbol):
 	else:
 		words = [text];
 	
+	print(str(len(longest)) + " " + longest)
 
 	length = len(longest) + (2 * padding); # An empty line will have this many spaces
 	space = " ";
@@ -143,9 +152,17 @@ def asciibox(text, symbol):
 	sign += (symbol + (space * length) + symbol) + "\n";
 
 	for line in words:
-		line_pad = math.floor(int((length-len(line))/2));
+		#line_pad = math.floor(int((length-len(line))/2));
+
+		pad_value = math.floor((length-len(line))/2); # Generalized pad value that may be subject to change
+		pad_left = pad_value;
+		pad_right = pad_value if len(longest)-len(line) <= 0 else pad_value + 1;
+		
+		#line_pad = length-len(line)>0?length-len(line)/2:;
+		#math.floor(int((length-len(line))/2));
+
 		#if line_pad % 2 != 0: line_pad = line_pad + 1; # Adjust for odd numbered lines
-		sign += (symbol + (space*line_pad) + line + (space*line_pad) + symbol) + "\n";
+		sign += (symbol + (space*pad_left) + line + (space*pad_right) + symbol) + "\n";
 		#sign += (symbol + (space*padding) + line + (space*padding) + symbol) + "\n";
 	
 

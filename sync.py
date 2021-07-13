@@ -34,7 +34,6 @@ def main():
 
 	options = ["Backup", "Synchronize"];
 	fctn = cli_ui.ask_choice(["Select a function"], choices = options);
-	print(fctn)
 
 
 	###### TODO Check drive sizes!
@@ -59,7 +58,8 @@ def main():
 
 	# print("Back up from " + source + " ----> " + destination);
 	# sys.exit() if input("Y/N: ").lower() != "y" else backup(source, destination);
-	
+	if(fctn == options[0]):
+		backup("C:/Users/timjh/Desktop/f1","C:/Users/timjh/Desktop/f2")
 	
 
 	#dir1 = "E:\\Music";
@@ -87,8 +87,8 @@ def backup(s, d):
 	print("Staring Backup! Comparing Directories....")
 	comp = dircmp(s,d); # Create the comparison object
 
-	print("Found " + len(comp.common_dirs) + " common artists\n")
-	print("Backing up " + len(comp.left_only) + " artists...\n")
+	print("Found " + str(len(comp.common_dirs)) + " common artists\n")
+	print("Backing up " + str(len(comp.left_only)) + " artists...\n")
 
 	for left in comp.left_only: # Move all new artists over
 
@@ -114,18 +114,19 @@ def backup(s, d):
 				print("Album Error | " + album);
 		
 	accuracy = {
-	artist: [artist, art_error, round(float(art_error/(artist+art_error)), 2) + "%"],
-	album: [albums, alb_error, round(float(alb_error/(albums+alb_error)), 2) + "%"]
+	artist: ["artist", str(art_error), str(artists+art_error), str(round(1-float(art_error/(artists+art_error)), 2) * 100) + "%"],
+	album: ["album", str(alb_error), str(artists+art_error), str(round(1-float(alb_error/(albums+alb_error)), 2) * 100) + "%"]
 	}
-	print("{:<8} {:<15} {:<10} {:<10}".format('Format', 'Success','Error','Accuracy'))
+	print("{:<8} {:<15} {:<10} {:<15}".format('Format', 'Total', 'Error','Accuracy'))
 	for k, v in accuracy.items():
-		form, success, error, acc = v
-		print ("{:<8} {:<15} {:<10} {:<10}".format(form, success, error, acc))
+		form, total, error, acc = v
+		print ("{:<8} {:<15} {:<10} {:<15}".format(form, total, error, acc))
 
 
-	print(len(comp.funny_files) + " Anomalies Found! Listing...")
-	for funny in comp.funny_files:
-		print(funny)
+	if(anomalies > 0):
+		print("Listing...")
+		for funny in comp.funny_files:
+			print(funny)
 
 
 # Synchronize two guaranteed existing directories

@@ -105,6 +105,7 @@ def backup(s, d):
 		comp_com = dircmp(os.path.join(comp.left,artist), os.path.join(comp.right,artist));
 
 		for album in comp_com.left_only:
+
 			l_path = os.path.join(comp_com.left, album);
 			try:
 				shutil.copytree(l_path, comp_com.right);
@@ -123,6 +124,8 @@ def backup(s, d):
 		print ("{:<8} {:<15} {:<10} {:<15}".format(form, total, error, acc))
 
 
+	anomalies = len(comp.funny_files);
+	print(str(anomalies) + " Anomalies Found!")
 	if(anomalies > 0):
 		print("Listing...")
 		for funny in comp.funny_files:

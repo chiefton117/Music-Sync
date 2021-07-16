@@ -12,6 +12,7 @@
 ##
 import sys
 import cli_ui
+import re
 import math
 from filecmp import dircmp
 import os.path
@@ -24,24 +25,14 @@ def main():
 	source = tk.Tk()
 	source.withdraw()
 
-	cli_ui.setup(title="Music_Sync_V1.0")
+	cli_ui.setup(title="Music Sync 1.1")
 
-	cli_ui.info(asciibox("Music Sync V1.0", "#"))
-
-	cli_ui.info_section("Music_Sync_V1.0")
+	cli_ui.info_section("Music Sync 1.1")
 
 
 
 	options = ["Backup", "Synchronize"];
-	fctn = cli_ui.ask_choice(["Select a function"], choices = options);
-
-
-	###### TODO Check drive sizes!
-
-
-	# asciibox("Music Synchronizer V1.0", "#")
-	# asciibox("aaaaaaaaaa", "a")
-	# asciibox("ferrets r cool", "/")
+	fctn = cli_ui.ask_choice("Select a function", choices = options);
 
 	# # Select two guaranteed existing source directories
 	# print("Please select a source directory | back up from here");
@@ -72,6 +63,7 @@ def main():
 
 
 
+
 # Backup from one directory to another, given two guaranteed existing directories in these steps:
 # 1. Copy all artists only existing in source to directory
 # 2. For all common artists, go one layer down
@@ -88,52 +80,90 @@ def backup(s, d):
 	comp = dircmp(s,d); # Create the comparison object
 
 	print("Found " + str(len(comp.common_dirs)) + " common artists\n")
-	print("Backing up " + str(len(comp.left_only)) + " artists...\n")
+
 
 	for left in comp.left_only: # Move all new artists over
 
+		# Update working directory to os standard convention
+		cl = re.sub(r"[\/\\]", str(os.sep + os.sep), str(comp.left))
+		start = os.path.join(cl, left);
+
+		cr = re.sub(r"[\/\\]", str(os.sep + os.sep), str(comp.right))
+		end = os.path.join(cr, left)
+
+		print(start)
+		print(end)
 		try:
-			shutil.copytree(os.path.join(comp.left,left), comp.right);
+			copytree(start,end);
 			artists = artists + 1;
 		except:
 			art_error = art_error + 1;
 			print("Artist Error | " + left);
 
 	for artist in comp.common_dirs:	# For all common artists, move new albums over
-
+		
 		# Compare artist directories for new albums
 		comp_com = dircmp(os.path.join(comp.left,artist), os.path.join(comp.right,artist));
 
 		for album in comp_com.left_only:
 
-			l_path = os.path.join(comp_com.left, album);
+			# Update working directory to os standard convention
+			ccl = re.sub(r"[\/\\]", str(os.sep + os.sep), str(comp_com.left))
+			start = os.path.join(ccl, album);
+
+			cr = re.sub(r"[\/\\]", str(os.sep + os.sep), str(comp_com.right))
+			end = os.path.join(cr,album)
+
 			try:
-				shutil.copytree(l_path, comp_com.right);
+				copytree(start, end);
 				albums = albums + 1;
 			except:
 				alb_error = alb_error + 1;
 				print("Album Error | " + album);
-		
-	accuracy = {
-	artist: ["artist", str(art_error), str(artists+art_error), str(round(1-float(art_error/(artists+art_error)), 2) * 100) + "%"],
-	album: ["album", str(alb_error), str(artists+art_error), str(round(1-float(alb_error/(albums+alb_error)), 2) * 100) + "%"]
-	}
-	print("{:<8} {:<15} {:<10} {:<15}".format('Format', 'Total', 'Error','Accuracy'))
-	for k, v in accuracy.items():
-		form, total, error, acc = v
-		print ("{:<8} {:<15} {:<10} {:<15}".format(form, total, error, acc))
+	
+	resultTable(artists, art_error, albums, alb_error)
 
 
 	anomalies = len(comp.funny_files);
-	print(str(anomalies) + " Anomalies Found!")
 	if(anomalies > 0):
+		print(str(anomalies) + " Anomalies Found!")
 		print("Listing...")
 		for funny in comp.funny_files:
-			print(funny)
+			print(funny);
 
 
 # Synchronize two guaranteed existing directories
 #def synchronize(s, d):
+
+
+def resultTable(artists, art_error, albums, alb_error):
+
+	print()
+	if artists + art_error == 0:
+		are = 0.00
+	else:
+		# Artist error rate
+		are = round(1-float(art_error/(artists+art_error)), 2) * 100
+
+	if albums + alb_error == 0:
+		ale = 0.00
+	else:
+		# Album error rate
+		ale = round(1-float(alb_error/(albums+alb_error)), 2) * 100
+
+	# Dictionary containing artist/album table
+	# accuracy = {
+	# artist: ["artist", str(artists+art_error), str(art_error), str(are) + "%"],
+	# album: ["album", str(albums+alb_error), str(alb_error), str(ale) + "%"]
+	# }
+	accuracy = [
+	["artist", str(artists+art_error), str(art_error), str(are) + "%"],
+	["album", str(albums+alb_error), str(alb_error), str(ale) + "%"]
+	]
+	print("{:<8} {:<15} {:<10} {:<15}".format('Format', 'Total', 'Error','Accuracy'))
+	for v in accuracy:
+		form, total, error, acc = v
+		print ("{:<8} {:<15} {:<10} {:<15}".format(form, total, error, acc))
 
 def asciibox(text, symbol):
 

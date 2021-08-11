@@ -16,7 +16,8 @@ import re
 import math
 from filecmp import dircmp
 import os.path
-from shutil import copytree
+#from shutil import copy, copytree
+import shutil
 import tkinter as tk
 from tkinter import filedialog
 
@@ -50,7 +51,7 @@ def main():
 	# print("Back up from " + source + " ----> " + destination);
 	# sys.exit() if input("Y/N: ").lower() != "y" else backup(source, destination);
 	if(fctn == options[0]):
-		backup("C:/Users/timjh/Desktop/f1","C:/Users/timjh/Desktop/f2")
+		backup("C:/Users/timjh/Desktop/m1","C:/Users/timjh/Desktop/m2")
 	
 
 	#dir1 = "E:\\Music";
@@ -75,6 +76,7 @@ def backup(s, d):
 	art_error = 0;
 	albums = 0;
 	alb_error = 0;
+	files = 0;
 
 	print("Staring Backup! Comparing Directories....")
 	comp = dircmp(s,d); # Create the comparison object
@@ -91,11 +93,13 @@ def backup(s, d):
 		cr = re.sub(r"[\/\\]", str(os.sep + os.sep), str(comp.right))
 		end = os.path.join(cr, left)
 
-		print(start)
-		print(end)
 		try:
-			copytree(start,end);
-			artists = artists + 1;
+			if(os.path.isdir(start)):
+				shutil.copytree(start,end);
+				artists = artists + 1;
+			else:
+				shutil.copy(start,end);
+				files = files + 1;
 		except:
 			art_error = art_error + 1;
 			print("Artist Error | " + left);
@@ -115,13 +119,19 @@ def backup(s, d):
 			end = os.path.join(cr,album)
 
 			try:
-				copytree(start, end);
-				albums = albums + 1;
+
+				if(os.path.isdir(start)):
+					shutil.copytree(start,end);
+					albums = albums + 1;
+				else:
+					shutil.copy(start,end);
+					files = files + 1;
+
 			except:
 				alb_error = alb_error + 1;
 				print("Album Error | " + album);
 	
-	resultTable(artists, art_error, albums, alb_error)
+	resultTable(artists, art_error, albums, alb_error, files)
 
 
 	anomalies = len(comp.funny_files);
@@ -136,7 +146,7 @@ def backup(s, d):
 #def synchronize(s, d):
 
 
-def resultTable(artists, art_error, albums, alb_error):
+def resultTable(artists, art_error, albums, alb_error, files):
 
 	print()
 	if artists + art_error == 0:
@@ -158,12 +168,13 @@ def resultTable(artists, art_error, albums, alb_error):
 	# }
 	accuracy = [
 	["artist", str(artists+art_error), str(art_error), str(are) + "%"],
-	["album", str(albums+alb_error), str(alb_error), str(ale) + "%"]
+	["album", str(albums+alb_error), str(alb_error), str(ale) + "%"],
+	["other", str(files), "N/A", "N/A"]
 	]
-	print("{:<8} {:<15} {:<10} {:<15}".format('Format', 'Total', 'Error','Accuracy'))
+	print("{:<8} {:<10} {:<10} {:<15}".format('Format', 'Total', 'Error','Accuracy'))
 	for v in accuracy:
 		form, total, error, acc = v
-		print ("{:<8} {:<15} {:<10} {:<15}".format(form, total, error, acc))
+		print ("{:<8} {:<10} {:<10} {:<15}".format(form, total, error, acc))
 
 def asciibox(text, symbol):
 

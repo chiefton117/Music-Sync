@@ -35,41 +35,31 @@ def main():
 	options = ["Backup", "Synchronize"];
 	fctn = cli_ui.ask_choice("Select a function", choices = options);
 
-	# # Select two guaranteed existing source directories
-	# print("Please select a source directory | back up from here");
-	# source = filedialog.askdirectory(title="--Select Source Directory--", mustexist = True)
-	# if(len(source) < 1): 
-	# 	print("Cancelling...");
-	# 	sys.exit();
+	# Select two guaranteed existing source directories
+	print("Please select a source directory | back up from here");
+	source = filedialog.askdirectory(title="--Select Source Directory--", mustexist = True)
+	if(len(source) < 1): 
+		print("Cancelling...");
+		sys.exit();
 
-	# print("Please select a destination directory | back up to here");
-	# destination = filedialog.askdirectory(title="--Select Destination Directory--", mustexist = True)
-	# if(len(destination) < 1): 
-	# 	print("Cancelling...");
-	# 	sys.exit();
+	print("Please select a destination directory | back up to here");
+	destination = filedialog.askdirectory(title="--Select Destination Directory--", mustexist = True)
+	if(len(destination) < 1): 
+		print("Cancelling...");
+		sys.exit();
 
-	# print("Back up from " + source + " ----> " + destination);
-	# sys.exit() if input("Y/N: ").lower() != "y" else backup(source, destination);
 	if(fctn == options[0]):
-		backup("C:/Users/timjh/Desktop/m1","C:/Users/timjh/Desktop/m2")
-	
-
-	#dir1 = "E:\\Music";
-	#dir2 = "C:\\Users\\Luna\\Music";
-	#comp = dircmp(dir1,dir2); # Create the comparison object
-	#for a in comp.left_only:
-	#	print(os.path.join(comp.left,a))
-
-
-
-
+		print("Back up from " + source + " ----> " + destination);
+		sys.exit() if input("Y/N: ").lower() != "y" else backup(source, destination);
+	if(fctn == options[1]):
+		print("Synchronize " + source + " <---> " + destination);
+		sys.exit() if input("Y/N: ").lower() != "y" else backup(source, destination);
 
 
 # Backup from one directory to another, given two guaranteed existing directories in these steps:
 # 1. Copy all artists only existing in source to directory
 # 2. For all common artists, go one layer down
 #	2a. Copy all albums existing only in source but not the destination
-
 def backup(s, d):
 	
 	artists = 0;
@@ -142,9 +132,10 @@ def backup(s, d):
 			print(funny);
 
 
-# Synchronize two guaranteed existing directories
-#def synchronize(s, d):
-
+#Synchronize two guaranteed existing directories
+def synchronize(s, d):
+	backup(s,d);
+	backup(d,s);
 
 def resultTable(artists, art_error, albums, alb_error, files):
 

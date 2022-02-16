@@ -1,9 +1,9 @@
 
-####				  	  ####
-#					     #
+####				  	  	 	  ####
+#					     			 #
 #  	   Music Synchronizer V1.0	     #
-#					     #
-####				  	  ####
+#					     			 #
+####				  	  		  ####
 
 ##
 ## This script backs up or synchronizes two directories of music

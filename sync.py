@@ -1,8 +1,8 @@
 
 ####				  	  	 	  ####
-#					     			 #
-#  	   Music Synchronizer V1.0	     #
-#					     			 #
+#					     		     #
+#  	   Music Synchronizer V1.0	     		     #
+#					     		     #
 ####				  	  		  ####
 
 ##
